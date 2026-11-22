@@ -1,0 +1,4 @@
+test "journal opens with a map and editor"
+  expect tree has "root"
+  expect tree has "map"
+  expect tree has "draft"

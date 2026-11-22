@@ -1,0 +1,91 @@
+use getCurrentPosition, GeolocationPosition from "@exact/geolocation"
+use takePhotoWithCameraApp, Photo from "@exact/camera"
+
+shape Entry
+  id: string
+  note: string
+  lat: number
+  lon: number
+  photo: string
+shape Journal
+  entries: Entry[]
+shape Saved
+  ok: bool
+
+component FieldJournal
+  state draft = ""
+  state lat = 37.7749
+  state lon = -122.4194
+  state located = false
+  state photo = ""
+  resource journal = entries() as shape Journal else empty()
+  mutation position as shape GeolocationPosition then arrived
+  mutation shot as shape Photo then captured
+  mutation saved as shape Saved refreshes journal then clear
+  action edit(value: string)
+    draft = value
+  action locate
+    send position = getCurrentPosition(maximumAge=0, enableHighAccuracy=true)
+  action arrived
+    match position
+      case some(p)
+        lat = p.coords.latitude
+        lon = p.coords.longitude
+        located = true
+      case none
+        located = false
+  action openMap
+    openURL(`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`)
+  action camera
+    send shot = takePhotoWithCameraApp(path=`app:/data/photo-${journal.entries.length + 1}`)
+  action captured
+    match shot
+      case some(p)
+        photo = p.path
+      case none
+        photo = ""
+  action save
+    if draft != "" and located and not pending(saved)
+      send saved = saveEntry(draft, lat, lon, photo)
+  action clear
+    draft = ""
+    photo = ""
+  view
+    main testId="root" width="100%" height="100%" display="flex" flex-direction="column" background-color="#f4f1e8" color="#19362c" font-family="system-ui"
+      scroll flex=1 min-height=0
+        column gap=14 padding=20
+          text "FIELD JOURNAL  /  01" font-size="0.75rem" font-weight=700 color="#587166"
+          text "Notice more." font-size="2rem" font-weight=700
+          text "A place for the things you find along the way." font-size="0.875rem" color="#587166"
+          column testId="map" gap=8 padding=18 border-radius=14 background-color="#dfe9db"
+            text "YOUR LOCATION" font-size="0.75rem" font-weight=700 color="#587166"
+            text (located ? `${lat}, ${lon}` : "Find your place") font-size="1.25rem" font-weight=700
+            button press=openMap disabled=(not located) testId="open-map" padding=10 border-radius=8 background-color="#ffffff"
+              text "Open in OpenStreetMap"
+          text "Your coordinates and notes are saved with each entry." font-size="0.75rem" color="#587166"
+          row gap=8 flex-wrap="wrap"
+            button press=locate testId="locate" padding=12 border-radius=10 background-color="#244e3f"
+              text (pending(position) ? "Finding…" : "Use my location") color="#ffffff"
+            button press=camera testId="camera" padding=12 border-radius=10 background-color="#e2e8dc"
+              text "Add photo"
+          text (located ? `Location ready · ${lat}, ${lon}` : "Add your location to place an entry on the map.") testId="location-status" font-size="0.8125rem"
+          if failed(position)
+            text "Location unavailable. Check permissions and try again." color="#a13b32"
+          if photo != ""
+            text "Photo attached" testId="photo-status" font-size="0.8125rem"
+          if failed(shot)
+            text "Camera unavailable or cancelled." color="#a13b32"
+          textarea value=draft input=edit testId="draft" aria-label="Journal note" placeholder="What did you notice?" width="100%" min-height=90 padding=12 box-sizing="border-box" background-color="#ffffff" border-radius=10
+          button press=save disabled=(draft == "" or not located or pending(saved)) testId="save" padding=14 border-radius=10 background-color="#c9e38b"
+            text (pending(saved) ? "Saving…" : "Save entry") font-weight=700
+          if failed(saved)
+            text "Could not save. Please try again." color="#a13b32"
+          text "YOUR ENTRIES" font-size="0.75rem" font-weight=700 color="#587166"
+          if journal.entries.length == 0
+            text "Your first discovery starts here." testId="empty" color="#587166"
+          for entry in journal.entries key=entry.id
+            column gap=4 padding=14 border-radius=10 background-color="#ffffff"
+              text entry.note font-weight=600
+              text `${entry.lat}, ${entry.lon}` font-size="0.75rem" color="#587166"
+              if entry.photo != ""
+                image entry.photo width="100%" height=180 object-fit="cover" aria-label="Journal photo"
