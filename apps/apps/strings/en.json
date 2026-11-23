@@ -43,5 +43,7 @@
   "counter.saving": "Saving…",
   "counter.title": "Live counter",
   "language.picker": "Language, {name}",
-  "language.system": "Use device language"
+  "language.system": "Use device language",
+  "purpose.geolocation": "Add your location to a journal entry.",
+  "purpose.camera": "Take a photo to attach to a journal entry."
 }

@@ -43,5 +43,7 @@
   "counter.saving": "सेव हो रहा है…",
   "counter.title": "लाइव काउंटर",
   "language.picker": "भाषा, {name}",
-  "language.system": "डिवाइस की भाषा इस्तेमाल करें"
+  "language.system": "डिवाइस की भाषा इस्तेमाल करें",
+  "purpose.geolocation": "जर्नल प्रविष्टि में अपना स्थान जोड़ें।",
+  "purpose.camera": "जर्नल प्रविष्टि के साथ जोड़ने के लिए फ़ोटो लें।"
 }

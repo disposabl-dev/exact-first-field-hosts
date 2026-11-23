@@ -43,5 +43,7 @@
   "counter.saving": "جارٍ الحفظ…",
   "counter.title": "العدّاد المباشر",
   "language.picker": "اللغة، {name}",
-  "language.system": "استخدام لغة الجهاز"
+  "language.system": "استخدام لغة الجهاز",
+  "purpose.geolocation": "إضافة موقعك إلى تدوينة في دفتر الميدان.",
+  "purpose.camera": "التقاط صورة لإرفاقها بتدوينة في دفتر الميدان."
 }
