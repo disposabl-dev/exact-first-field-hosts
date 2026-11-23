@@ -1,28 +1,27 @@
 {
   "$schema": ".exact/checkout/scripts/app.schema.json",
-  "name": "Apps",
-  "short_name": "Apps",
-  "id": "com.example.apps-8d662a",
+  "name": "Field Journal",
+  "short_name": "Field Journal",
+  "id": "dev.disposabl.fresh.fieldjournal",
   "start_url": "/",
   "display": "standalone",
   "env": [
-    "CONVEX_ORIGIN",
-    "CONVEX_SITE_ORIGIN"
+    "CONVEX_ORIGIN"
   ],
   "app": {
-    "id": "com.example.apps-8d662a",
-    "name": "Apps"
+    "id": "dev.disposabl.fresh.fieldjournal",
+    "name": "Field Journal"
   },
   "variants": {
     "preview": {
       "idSuffix": ".preview",
-      "name": "Apps Preview"
+      "name": "Field Journal Preview"
     }
   },
   "host": {
     "web": {},
     "android": {
-      "id": "dev.disposabl.exact"
+      "id": "dev.disposabl.fresh.fieldjournal"
     },
     "ios": {
       "minimumOS": "17.0",
